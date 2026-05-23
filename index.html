@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elite Coding Club — Code, Collaborate, Build the Future.">
+  <title>Elite Coding Club | ECC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.3/vanilla-tilt.min.js"></script>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading">
+    <div class="loading-logo">ECC</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+    <div class="loading-text">INITIALIZING ELITE CODING CLUB</div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="cursor-trail-container"></div>
+  <div class="noise"></div>
+
+  <!-- 3D Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav id="navbar">
+    <div class="nav-logo" id="nav-logo">
+      <div class="nav-logo-icon">ECC</div>
+      ELITE CC
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home" data-page="home">Home</a></li>
+      <li><a href="#about" data-page="about">About</a></li>
+      <li><a href="#team" data-page="team">Team</a></li>
+      <li><a href="#projects" data-page="projects">Projects</a></li>
+      <li><a href="#events" data-page="events">Events</a></li>
+      <li><a href="#contact" data-page="contact">Contact</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="nav-admin-btn" id="nav-admin-btn"><span>⚙ ADMIN</span></button>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu"
+    style="position:fixed;top:70px;left:0;right:0;z-index:999;background:rgba(2,2,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(123,47,255,0.2);padding:1.5rem;display:none;flex-direction:column;gap:1rem;">
+    <a href="#home"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;border-bottom:1px solid rgba(123,47,255,0.1);">HOME</a>
+    <a href="#about"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;border-bottom:1px solid rgba(123,47,255,0.1);">ABOUT</a>
+    <a href="#team"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;border-bottom:1px solid rgba(123,47,255,0.1);">TEAM</a>
+    <a href="#projects"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;border-bottom:1px solid rgba(123,47,255,0.1);">PROJECTS</a>
+    <a href="#events"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;border-bottom:1px solid rgba(123,47,255,0.1);">EVENTS</a>
+    <a href="#contact"
+      style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(200,200,220,0.7);padding:0.75rem 0;">CONTACT</a>
+  </div>
+
+  <!-- ===== HOME PAGE ===== -->
+  <div class="page" id="page-home">
+    <!-- Hex grid bg -->
+    <div class="hex-grid" id="hex-grid-bg"></div>
+
+    <div class="hero-content">
+      <!-- ECC Logo -->
+      <div class="ecc-logo-container">
+        <svg class="ecc-logo-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#7b2fff" />
+              <stop offset="100%" style="stop-color:#00d4ff" />
+            </linearGradient>
+            <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#e8e8e8" />
+              <stop offset="40%" style="stop-color:#a855f7" />
+              <stop offset="100%" style="stop-color:#00d4ff" />
+            </linearGradient>
+            <linearGradient id="codeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#a855f7" />
+              <stop offset="100%" style="stop-color:#00d4ff" />
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="strongGlow">
+              <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Outer rotating ring -->
+          <circle cx="150" cy="150" r="140" fill="none" stroke="url(#hexGrad)" stroke-width="0.5" stroke-dasharray="4,8"
+            opacity="0.4">
+            <animateTransform attributeName="transform" type="rotate" from="0 150 150" to="360 150 150" dur="30s"
+              repeatCount="indefinite" />
+          </circle>
+          <!-- Middle ring -->
+          <circle cx="150" cy="150" r="120" fill="none" stroke="rgba(123,47,255,0.2)" stroke-width="1">
+            <animateTransform attributeName="transform" type="rotate" from="360 150 150" to="0 150 150" dur="20s"
+              repeatCount="indefinite" />
+          </circle>
+          <!-- Main Hexagon -->
+          <polygon points="150,20 260,82 260,218 150,280 40,218 40,82" fill="rgba(7,7,20,0.9)" stroke="url(#hexGrad)"
+            stroke-width="2" filter="url(#glow)" />
+          <!-- Inner hex accent -->
+          <polygon points="150,35 248,90 248,210 150,265 52,210 52,90" fill="none" stroke="rgba(123,47,255,0.2)"
+            stroke-width="0.5" />
+          <!-- Corner dots -->
+          <circle cx="150" cy="22" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <circle cx="259" cy="83" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <circle cx="259" cy="217" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <circle cx="150" cy="278" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <circle cx="41" cy="217" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <circle cx="41" cy="83" r="4" fill="url(#hexGrad)" filter="url(#glow)" />
+          <!-- Code brackets -->
+          <text x="150" y="85" text-anchor="middle" font-family="Orbitron,monospace" font-size="20" font-weight="900"
+            fill="url(#codeGrad)" filter="url(#glow)">&lt;/&gt;</text>
+          <!-- ECC Letters -->
+          <text x="150" y="195" text-anchor="middle" font-family="Orbitron,monospace" font-size="72" font-weight="900"
+            fill="url(#textGrad)" filter="url(#strongGlow)" letter-spacing="-4">ECC</text>
+          <!-- Scanning line animation -->
+          <rect x="40" y="0" width="220" height="3" fill="url(#hexGrad)" opacity="0.4">
+            <animateTransform attributeName="transform" type="translate" values="0,40;0,240;0,40" dur="4s"
+              repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite" />
+          </rect>
+          <!-- Bottom label -->
+          <text x="150" y="240" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600"
+            fill="rgba(200,200,220,0.5)" letter-spacing="4">ELITE CODING CLUB</text>
+        </svg>
+      </div>
+
+      <div class="hero-subtitle-row">// HACKATHON TEAM · EST. 2024</div>
+      <h1 class="hero-title">
+        <span class="white">CODE.</span>
+        <span class="grad"> COLLABORATE.</span><br>
+        <span class="white">BUILD THE </span>
+        <span class="grad">FUTURE.</span>
+      </h1>
+      <div class="hero-typed-wrapper">
+        <span id="typed-el"></span>
+      </div>
+      <p class="hero-tagline">
+        CODE <span class="hero-dots">•</span>
+        COLLABORATE <span class="hero-dots">•</span>
+        INNOVATE <span class="hero-dots">•</span>
+        ELEVATE
+      </p>
+      <div class="hero-cta-group">
+        <a href="#projects" class="btn-primary" style="display:inline-block">VIEW PROJECTS</a>
+        <a href="#team" class="btn-secondary" style="display:inline-block">MEET THE TEAM</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num" id="hero-stat-members" data-target="50">0</div>
+          <div class="stat-label">Members</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="hero-stat-projects" data-target="30">0</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="hero-stat-hackathons" data-target="15">0</div>
+          <div class="stat-label">Hackathons</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="hero-stat-awards" data-target="8">0</div>
+          <div class="stat-label">Awards</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <div class="scroll-hint-line"></div>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT PAGE ===== -->
+  <div class="page" id="page-about">
+    <div class="section">
+      <div class="section-header reveal">
+        <div class="section-label">ABOUT US</div>
+        <h2 class="section-title">We Don't Just Write Code,<br>We <span class="accent">Build Solutions</span></h2>
+        <p class="section-desc">Elite Coding Club is where passionate developers, designers, and innovators converge to
+          shape tomorrow's technology through collaboration and creativity.</p>
+      </div>
+
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <h3>// OUR MISSION</h3>
+          <p>At ECC, we believe that great software is born from great minds working together. We foster an environment
+            where learning never stops, where ideas are challenged and refined, and where every member grows into a
+            better engineer.</p>
+          <p>From algorithms and data structures to cloud architecture and AI/ML — we tackle the full spectrum of
+            technology, competing in hackathons and building real solutions that make an impact.</p>
+          <p>BUILD LOGIC. SOLVE REALITY. That's our mantra.</p>
+          <div style="display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;">
+            <a href="#team" class="btn-primary" style="display:inline-block">MEET THE TEAM</a>
+            <a href="#contact" class="btn-secondary" style="display:inline-block">JOIN US</a>
+          </div>
+        </div>
+        <div class="about-visual">
+          <div class="about-hex-visual">
+            <span class="about-hex-inner">ECC</span>
+          </div>
+          <div class="about-orbit"></div>
+          <div class="about-orbit"
+            style="inset:-70px;animation-duration:25s;animation-direction:reverse;border-color:rgba(0,212,255,0.15);">
+            <div
+              style="position:absolute;bottom:-5px;left:50%;width:10px;height:10px;margin-left:-5px;background:var(--purple);border-radius:50%;box-shadow:var(--glow-purple);">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillars -->
+      <div class="section-header reveal" style="margin-bottom:2rem;margin-top:2rem;">
+        <div class="section-label">PHILOSOPHY</div>
+        <h2 class="section-title">Our <span class="accent">Core Pillars</span></h2>
+      </div>
+      <div class="pillars-grid reveal">
+        <div class="pillar-card" data-tilt data-tilt-max="10">
+          <span class="pillar-icon">🧠</span>
+          <div class="pillar-title">THINK</div>
+          <div class="pillar-text">We analyze problems from first principles before writing a single line of code.</div>
+        </div>
+        <div class="pillar-card" data-tilt data-tilt-max="10">
+          <span class="pillar-icon">🎨</span>
+          <div class="pillar-title">DESIGN</div>
+          <div class="pillar-text">Elegant architecture and intuitive UX are as important as functional correctness.
+          </div>
+        </div>
+        <div class="pillar-card" data-tilt data-tilt-max="10">
+          <span class="pillar-icon">⚡</span>
+          <div class="pillar-title">DEVELOP</div>
+          <div class="pillar-text">We ship clean, efficient code using modern tools and best practices.</div>
+        </div>
+        <div class="pillar-card" data-tilt data-tilt-max="10">
+          <span class="pillar-icon">🚀</span>
+          <div class="pillar-title">DEPLOY</div>
+          <div class="pillar-text">Our solutions go live — reaching real users and solving real-world problems.</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-strip reveal" style="margin-top:3rem;">
+        <div class="stats-item">
+          <div class="stats-num" id="about-stat-members" data-target="50">0</div>
+          <div class="stats-label">Active Members</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-num" id="about-stat-projects" data-target="30">0</div>
+          <div class="stats-label">Projects Built</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-num" id="about-stat-hackathons" data-target="15">0</div>
+          <div class="stats-label">Hackathons</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-num" id="about-stat-awards" data-target="8">0</div>
+          <div class="stats-label">Awards Won</div>
+        </div>
+      </div>
+
+      <!-- Domains -->
+      <div class="section-header reveal" style="margin-top:4rem;margin-bottom:2rem;">
+        <div class="section-label">EXPERTISE</div>
+        <h2 class="section-title">Our <span class="accent">Tech Domains</span></h2>
+      </div>
+      <div class="domains-grid reveal">
+        <div class="domain-item"><span class="domain-icon">⚙️</span>
+          <div class="domain-name">ALGORITHM</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">🗂️</span>
+          <div class="domain-name">DATA STRUCTURES</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">🏗️</span>
+          <div class="domain-name">SYSTEM DESIGN</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">☁️</span>
+          <div class="domain-name">CLOUD</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">🔐</span>
+          <div class="domain-name">CYBER SECURITY</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">🤖</span>
+          <div class="domain-name">AI / ML</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">🌐</span>
+          <div class="domain-name">WEB DEVELOPMENT</div>
+        </div>
+        <div class="domain-item"><span class="domain-icon">📱</span>
+          <div class="domain-name">MOBILE APPS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TEAM PAGE ===== -->
+  <div class="page" id="page-team">
+    <div class="section">
+      <div class="section-header reveal">
+        <div class="section-label">THE TEAM</div>
+        <h2 class="section-title">Meet the <span class="accent">Architects</span></h2>
+        <p class="section-desc">Passionate engineers, problem-solvers, and innovators united by one goal — to build
+          technology that matters.</p>
+      </div>
+      <div class="team-grid" id="team-grid">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROJECTS PAGE ===== -->
+  <div class="page" id="page-projects">
+    <div class="section">
+      <div class="section-header reveal">
+        <div class="section-label">OUR WORK</div>
+        <h2 class="section-title">Built with <span class="accent">Purpose</span></h2>
+        <p class="section-desc">From hackathon submissions to production applications — here's what we've created.</p>
+      </div>
+      <div class="projects-filters reveal" id="project-filters">
+        <button class="filter-btn active" data-filter="all">ALL</button>
+        <button class="filter-btn" data-filter="web">WEB</button>
+        <button class="filter-btn" data-filter="mobile">MOBILE</button>
+        <button class="filter-btn" data-filter="ai">AI/ML</button>
+        <button class="filter-btn" data-filter="cloud">CLOUD</button>
+        <button class="filter-btn" data-filter="security">SECURITY</button>
+      </div>
+      <div class="projects-grid" id="projects-grid">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EVENTS PAGE ===== -->
+  <div class="page" id="page-events">
+    <div class="section">
+      <div class="section-header reveal">
+        <div class="section-label">TIMELINE</div>
+        <h2 class="section-title">Events & <span class="accent">Milestones</span></h2>
+        <p class="section-desc">A chronicle of hackathons, workshops, and achievements that define the ECC journey.</p>
+      </div>
+      <div class="timeline reveal" id="events-timeline">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONTACT PAGE ===== -->
+  <div class="page" id="page-contact">
+    <div class="section">
+      <div class="section-header reveal">
+        <div class="section-label">GET IN TOUCH</div>
+        <h2 class="section-title">Let's <span class="accent">Connect</span></h2>
+        <p class="section-desc">Whether you want to join ECC, collaborate on a project, or just say hello — we'd love to
+          hear from you.</p>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="contact-info">
+          <h3>// REACH OUT</h3>
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div class="contact-item-text">
+              <strong>Email</strong>
+              elitecodingclub@gmail.com
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">💬</div>
+            <div class="contact-item-text">
+              <strong>Discord</strong>
+              discord.gg/elitecodingclub
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🏫</div>
+            <div class="contact-item-text">
+              <strong>Campus</strong>
+              Our College Campus, India
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div class="contact-item-text">
+              <strong>Sessions</strong>
+              Every Saturday 3:00 PM
+            </div>
+          </div>
+          <div class="socials-row">
+            <a class="social-big" href="#" title="GitHub">GH</a>
+            <a class="social-big" href="#" title="LinkedIn">LI</a>
+            <a class="social-big" href="#" title="Twitter">TW</a>
+            <a class="social-big" href="#" title="Instagram">IG</a>
+            <a class="social-big" href="#" title="YouTube">YT</a>
+          </div>
+        </div>
+        <form class="contact-form" id="contact-form">
+          <div class="form-group">
+            <label class="form-label">// YOUR NAME</label>
+            <input class="form-input" type="text" id="cf-name" placeholder="John Doe" required maxlength="100">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">// EMAIL</label>
+              <input class="form-input" type="email" id="cf-email" placeholder="john@example.com" required
+                maxlength="150">
+            </div>
+            <div class="form-group">
+              <label class="form-label">// TOPIC</label>
+              <select class="form-select" id="cf-topic" required>
+                <option value="">Select...</option>
+                <option value="Join ECC">Join ECC</option>
+                <option value="Collaboration">Collaboration</option>
+                <option value="Sponsorship">Sponsorship</option>
+                <option value="General Query">General Query</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">// MESSAGE</label>
+            <textarea class="form-textarea" id="cf-message" placeholder="Tell us what's on your mind..." required
+              maxlength="1000"></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="cf-submit-btn">SEND MESSAGE →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-name">ELITE CC</div>
+        <div class="footer-brand-desc">We don't just write code — we build solutions that shape tomorrow. Code ·
+          Collaborate · Innovate · Elevate.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">NAVIGATE</div>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#projects">Projects</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">DOMAINS</div>
+        <ul class="footer-links">
+          <li><a href="#">Algorithm</a></li>
+          <li><a href="#">Web Dev</a></li>
+          <li><a href="#">AI / ML</a></li>
+          <li><a href="#">Cloud</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">CONNECT</div>
+        <ul class="footer-links">
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Discord</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 ELITE CODING CLUB · ALL RIGHTS RESERVED</div>
+      <div class="footer-tagline">BUILD LOGIC · SOLVE REALITY</div>
+    </div>
+  </footer>
+
+  <!-- ===== TOAST CONTAINER ===== -->
+  <div id="toast-container"></div>
+
+  <!-- ===== ADMIN LOGIN MODAL ===== -->
+  <div id="admin-modal">
+    <div class="admin-login-box">
+      <button class="login-close" id="login-close-btn">✕</button>
+      <div class="login-logo">
+        <div class="admin-hex">⚙</div>
+        <div class="login-title">ADMIN ACCESS</div>
+        <div class="login-subtitle">ECC CONTROL PANEL</div>
+      </div>
+      <div class="login-error" id="login-error">Login failed. Access denied.</div>
+      <div class="form-group">
+        <label class="form-label">// EMAIL</label>
+        <input class="form-input" type="email" id="admin-email" placeholder="admin@example.com" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">// PASSWORD</label>
+        <input class="form-input" type="password" id="admin-pass" placeholder="Enter Password"
+          autocomplete="current-password">
+      </div>
+      <button class="btn-primary" id="admin-login-btn" style="width:100%;padding:14px;">ACCESS PANEL →</button>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="admin-panel">
+    <div class="admin-topbar">
+      <div class="admin-brand">
+        <div class="nav-logo-icon" style="width:36px;height:36px;font-size:0.6rem;">ECC</div>
+        ECC ADMIN
+        <span class="badge">CONTROL PANEL</span>
+      </div>
+      <div class="admin-topbar-right">
+        <div class="admin-user" id="admin-user-email">👤 admin</div>
+        <button class="admin-logout-btn" id="admin-logout-btn">LOGOUT</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <!-- Sidebar -->
+      <div class="admin-sidebar">
+        <div class="admin-nav-item active" data-admin-section="dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="admin-nav-item" data-admin-section="team-admin">
+          <span class="nav-icon">👥</span> Team Members
+        </div>
+        <div class="admin-nav-item" data-admin-section="projects-admin">
+          <span class="nav-icon">💼</span> Projects
+        </div>
+        <div class="admin-nav-item" data-admin-section="events-admin">
+          <span class="nav-icon">📅</span> Events
+        </div>
+        <div class="admin-nav-item" data-admin-section="stats-admin">
+          <span class="nav-icon">⚡</span> Club Stats
+        </div>
+        <div class="admin-nav-item" data-admin-action="close"
+          style="margin-top:auto;border-top:1px solid rgba(123,47,255,0.1);padding-top:1rem;">
+          <span class="nav-icon">🚪</span> Back to Site
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="admin-main">
+
+        <!-- Dashboard -->
+        <div class="admin-section active" id="admin-sec-dashboard">
+          <div class="admin-section-header">
+            <div class="admin-section-title"><span>// OVERVIEW</span>DASHBOARD</div>
+          </div>
+          <div class="admin-stat-cards">
+            <div class="admin-stat-card">
+              <div class="admin-stat-num" id="dash-members">0</div>
+              <div class="admin-stat-label">Team Members</div>
+              <div class="admin-stat-icon">👥</div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-num" id="dash-projects">0</div>
+              <div class="admin-stat-label">Projects</div>
+              <div class="admin-stat-icon">💼</div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-num" id="dash-events">0</div>
+              <div class="admin-stat-label">Events</div>
+              <div class="admin-stat-icon">📅</div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-num" id="dash-upcoming">0</div>
+              <div class="admin-stat-label">Upcoming Events</div>
+              <div class="admin-stat-icon">🚀</div>
+            </div>
+          </div>
+          <div
+            style="background:rgba(10,10,25,0.8);border:1px solid rgba(123,47,255,0.15);border-radius:10px;padding:2rem;backdrop-filter:blur(10px);">
+            <div
+              style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:3px;color:var(--blue);margin-bottom:1rem;">
+              // QUICK ACTIONS</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+              <button class="btn-add" data-admin-jump="team-admin" data-open-form="member">+
+                ADD MEMBER</button>
+              <button class="btn-add" data-admin-jump="projects-admin" data-open-form="project">+
+                ADD PROJECT</button>
+              <button class="btn-add" data-admin-jump="events-admin" data-open-form="event">+
+                ADD EVENT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Admin -->
+        <div class="admin-section" id="admin-sec-team-admin">
+          <div class="admin-section-header">
+            <div class="admin-section-title"><span>// MANAGE</span>TEAM MEMBERS</div>
+            <button class="btn-add" data-open-form="member">+ ADD MEMBER</button>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>MEMBER</th>
+                  <th>ROLE</th>
+                  <th>SKILLS</th>
+                  <th>YEAR</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="team-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Projects Admin -->
+        <div class="admin-section" id="admin-sec-projects-admin">
+          <div class="admin-section-header">
+            <div class="admin-section-title"><span>// MANAGE</span>PROJECTS</div>
+            <button class="btn-add" data-open-form="project">+ ADD PROJECT</button>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>PROJECT</th>
+                  <th>CATEGORY</th>
+                  <th>TECH STACK</th>
+                  <th>STATUS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="projects-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Events Admin -->
+        <div class="admin-section" id="admin-sec-events-admin">
+          <div class="admin-section-header">
+            <div class="admin-section-title"><span>// MANAGE</span>EVENTS</div>
+            <button class="btn-add" data-open-form="event">+ ADD EVENT</button>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>EVENT</th>
+                  <th>DATE</th>
+                  <th>TYPE</th>
+                  <th>STATUS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="events-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Stats Admin -->
+        <div class="admin-section" id="admin-sec-stats-admin">
+          <div class="admin-section-header">
+            <div class="admin-section-title"><span>// MANAGE</span>CLUB STATS</div>
+          </div>
+          <div
+            style="background:rgba(10,10,25,0.8);border:1px solid rgba(123,47,255,0.15);border-radius:10px;padding:2rem;backdrop-filter:blur(10px);">
+            <p style="font-family:var(--font-body);color:rgba(200,200,220,0.5);margin-bottom:2rem;font-size:0.9rem;">
+              Update the hero statistics displayed on the website.</p>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">// MEMBERS</label><input class="form-input"
+                  type="number" id="stat-members" placeholder="50"></div>
+              <div class="form-group"><label class="form-label">// PROJECTS</label><input class="form-input"
+                  type="number" id="stat-projects" placeholder="30"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">// HACKATHONS</label><input class="form-input"
+                  type="number" id="stat-hackathons" placeholder="15"></div>
+              <div class="form-group"><label class="form-label">// AWARDS</label><input class="form-input" type="number"
+                  id="stat-awards" placeholder="8"></div>
+            </div>
+            <button class="btn-save" id="save-stats-btn">SAVE STATS</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FORM MODAL ===== -->
+  <div id="form-modal">
+    <div class="form-modal-box">
+      <div class="form-modal-title">
+        <span id="form-modal-title-text">ADD MEMBER</span>
+        <button class="modal-close-btn" id="form-modal-close-btn">✕</button>
+      </div>
+      <div id="form-modal-body"></div>
+      <div class="form-actions">
+        <button class="btn-save" id="form-save-btn">SAVE</button>
+        <button class="btn-cancel" id="form-cancel-btn">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- External App JS -->
+  <script src="app.js"></script>
+</body>
+
+</html>
